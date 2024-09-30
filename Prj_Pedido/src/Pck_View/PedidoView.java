@@ -32,7 +32,6 @@ public class PedidoView extends JFrame{
         setLocationRelativeTo(null);
         setLayout(null);
         
-        
         JLabel lblIdCliente = new JLabel("IdCliente:");
         lblIdCliente.setBounds(20, 20, 100, 25);
         add(lblIdCliente);
