@@ -1,98 +1,135 @@
 package Pck_View;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
+import javax.swing.*;
+import Pck_Control.ProdutoControl;
+import Pck_Model.ProdutoModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-
-import Pck_Control.ProdutoControl;
+import java.util.List;
 
 public class ProdutoView extends JFrame {
-	
-	private JTextField tfEstoque;
-	private JTextField tfDescricao;
-	private JTextField tfValorUnitario;
-	private ProdutoControl produtoControl;
-	private JButton btnInserir;
-	
-	public ProdutoView() {
-		produtoControl = new ProdutoControl();
-		
-		setTitle("Cadastro de Produtos");
-        setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(null);
-        
-        JLabel lblEstoque = new JLabel("Estoque:");
-        lblEstoque.setBounds(20, 20, 100, 25);
-        add(lblEstoque);
-        
-        tfEstoque = new JTextField();
-        tfEstoque.setBounds(120, 20, 200, 25);
-        add(tfEstoque);
-        
-        JLabel lblDescricao = new JLabel("Descricao:");
-        lblDescricao.setBounds(20, 60, 100, 25);
-        add(lblDescricao);
-        
-        tfDescricao = new JTextField();
-        tfDescricao.setBounds(120, 60, 200, 25);
-        add(tfDescricao);
-        
-        JLabel lblValorTotal = new JLabel("Valor Unitario:");
-        lblValorTotal.setBounds(20, 100, 100, 25);
-        add(lblValorTotal);
-        
-        tfValorUnitario = new JTextField();
-        tfValorUnitario.setBounds(120, 100, 200, 25);
-        add(tfValorUnitario);
-        
-        btnInserir = new JButton("Inserir");
-        btnInserir.setBounds(150, 150, 100, 25);
-        add(btnInserir);
+    private ProdutoControl produtoControl = new ProdutoControl();
+    private JTextField txtDescricao, txtEstoque, txtValorUnitario;
+    private JTextArea txtAreaProdutos;
 
-        btnInserir.addActionListener((ActionListener) new ActionListener() {
-            @Override
+    public ProdutoView() {
+        // Configuração da interface (layout, campos, botões, etc.)
+        setTitle("Gerenciamento de Produtos");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Painel principal
+        JPanel panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BorderLayout());
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Espaçamento nas bordas
+        add(panelPrincipal, BorderLayout.CENTER);
+
+        // Painel de entrada de dados
+        JPanel panelEntrada = new JPanel();
+        panelEntrada.setLayout(new GridLayout(4, 2, 10, 10)); // 4 linhas, 2 colunas com espaçamento
+        panelEntrada.setBorder(BorderFactory.createTitledBorder("Dados do Produto")); // Borda para o painel
+        panelPrincipal.add(panelEntrada, BorderLayout.NORTH);
+
+        // Campos de entrada
+        panelEntrada.add(new JLabel("Descrição:"));
+        txtDescricao = new JTextField();
+        panelEntrada.add(txtDescricao);
+
+        panelEntrada.add(new JLabel("Estoque:"));
+        txtEstoque = new JTextField();
+        panelEntrada.add(txtEstoque);
+
+        panelEntrada.add(new JLabel("Valor Unitário:"));
+        txtValorUnitario = new JTextField();
+        panelEntrada.add(txtValorUnitario);
+
+        // Área de texto para listar produtos
+        txtAreaProdutos = new JTextArea();
+        txtAreaProdutos.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(txtAreaProdutos);
+        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+
+        // Painel de botões
+        JPanel panelBotoes = new JPanel();
+        panelBotoes.setLayout(new FlowLayout()); // Layout em linha
+        panelBotoes.setBorder(BorderFactory.createTitledBorder("Ações")); // Borda para o painel
+        panelPrincipal.add(panelBotoes, BorderLayout.SOUTH);
+
+        // Botões
+        JButton btnInserir = new JButton("Inserir");
+        btnInserir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 inserirProduto();
             }
         });
-	}
-	
-	private void inserirProduto() {
-		int A02_Estoque = 0;
-		String A02_Descricao = tfDescricao.getText();		
-		double A02_Valor_Unitario = 0;
-		try {
-			 A02_Estoque = Integer.parseInt(tfEstoque.getText());
-		 } catch (NumberFormatException e) {
-			 JOptionPane.showMessageDialog(this, "O estoque de conter apenas numeros", "Erro", JOptionPane.ERROR_MESSAGE);
-		 }
-		 
-		
-		try {
-            A02_Valor_Unitario = Double.parseDouble(tfValorUnitario.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Valor Unitario deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
+        panelBotoes.add(btnInserir);
+
+        JButton btnListar = new JButton("Listar");
+        btnListar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                listarProdutos();
+            }
+        });
+        panelBotoes.add(btnListar);
+
+        JButton btnAlterar = new JButton("Alterar");
+        btnAlterar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                alterarProduto();
+            }
+        });
+        panelBotoes.add(btnAlterar);
+
+        JButton btnExcluir = new JButton("Excluir");
+        btnExcluir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                excluirProduto();
+            }
+        });
+        panelBotoes.add(btnExcluir);
+    }
+
+    private void inserirProduto() {
+        String descricao = txtDescricao.getText();
+        int estoque = Integer.parseInt(txtEstoque.getText());
+        double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
+        produtoControl.inserirProduto(estoque, descricao, valorUnitario);
+        JOptionPane.showMessageDialog(this, "Produto inserido com sucesso!");
+        listarProdutos();
+    }
+
+    private void listarProdutos() {
+        txtAreaProdutos.setText("");
+        List<ProdutoModel> produtos = produtoControl.listarProdutos();
+        for (ProdutoModel produto : produtos) {
+            txtAreaProdutos.append("ID: " + produto.getA02_Id() + ", Descrição: " + produto.getA02_Descricao() + 
+                                   ", Estoque: " + produto.getA02_Estoque() + ", Valor Unitário: " + produto.getA02_Valor_Unitario() + "\n");
         }
-		
-		produtoControl.inserirProduto(A02_Estoque, A02_Descricao, A02_Valor_Unitario);
-	}
-	
-	 public static void main(String[] args) {
-	        SwingUtilities.invokeLater(new Runnable() {
-	            @Override
-	            public void run() {
-	                new ProdutoView().setVisible(true);
-	            }
-	        });
-	    }
+    }
+
+    private void alterarProduto() {
+        String idStr = JOptionPane.showInputDialog("Informe o ID do produto a ser alterado:");
+        int id = Integer.parseInt(idStr);
+        String descricao = txtDescricao.getText();
+        int estoque = Integer.parseInt(txtEstoque.getText());
+        double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
+        produtoControl.alterarProduto(id, estoque, descricao, valorUnitario);        // Id dando erro na procedure
+        JOptionPane.showMessageDialog(this, "Produto alterado com sucesso!");
+        listarProdutos();
+    }
+
+    private void excluirProduto() {
+        String idStr = JOptionPane.showInputDialog("Informe o ID do produto a ser excluído:");
+        int id = Integer.parseInt(idStr);
+        produtoControl.excluirProduto(id);
+        JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
+        listarProdutos();
+    }
+
+    public static void main(String[] args) {
+        ProdutoView view = new ProdutoView();
+        view.setVisible(true);
+    }
 }
