@@ -9,8 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PaginaInicialView extends JFrame {
-
-    // Controles para diferentes funcionalidades
+	
+	private static PaginaInicialView instance;
     private ClienteControl clienteControl;
     private ProdutoControl produtoControl;
     private PedidoControl pedidoControl;
@@ -38,6 +38,7 @@ public class PaginaInicialView extends JFrame {
         btnClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	dispose(); // Fecha a janela atual
                 new ClienteView(clienteControl).setVisible(true); // Abre a tela de Clientes
             }
         });
@@ -47,6 +48,7 @@ public class PaginaInicialView extends JFrame {
         btnProdutos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	dispose();
                 new ProdutoView(produtoControl).setVisible(true); // Abre a tela de Produtos
             }
         });
@@ -56,6 +58,7 @@ public class PaginaInicialView extends JFrame {
         btnPedidos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	dispose();
                 new PedidoView(pedidoControl).setVisible(true); // Abre a tela de Pedidos
             }
         });
@@ -73,9 +76,15 @@ public class PaginaInicialView extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(titleLabel, BorderLayout.NORTH);
     }
+    
+    public static PaginaInicialView getInstance() {
+        if (instance == null) {
+            instance = new PaginaInicialView();
+        }
+        return instance;
+    }
 
     public static void main(String[] args) {
-        // Cria e exibe a tela principal
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

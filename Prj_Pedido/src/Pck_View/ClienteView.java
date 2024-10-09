@@ -15,7 +15,7 @@ public class ClienteView extends JFrame {
     private ClienteControl clienteControl;
 
     public ClienteView(ClienteControl clienteControl) {
-        clienteControl = new ClienteControl();
+    	this.clienteControl = clienteControl;
 
         // Configuração da interface
         setTitle("Gerenciamento de Clientes");

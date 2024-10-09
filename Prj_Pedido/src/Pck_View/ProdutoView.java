@@ -92,7 +92,7 @@ public class ProdutoView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Fecha a janela atual
-                new PaginaInicialView().setVisible(true); // Abre a tela inicial
+                PaginaInicialView.getInstance().setVisible(true); // Usa a instância única
             }
         });
         panelBotoes.add(btnVoltar);
