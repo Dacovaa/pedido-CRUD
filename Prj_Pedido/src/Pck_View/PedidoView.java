@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import Pck_Control.PedidoControl;
+import Pck_Control.ProdutoControl;
 import Pck_Model.PedidoModel;
 
 public class PedidoView extends JFrame {
@@ -18,7 +19,7 @@ public class PedidoView extends JFrame {
     private JButton btnExcluirPedido;
     private JButton btnListar; // Novo botão para listar pedidos
 
-    public PedidoView() {
+    public PedidoView(PedidoControl pedidocontrol) {
         pedidoControl = new PedidoControl();
 
         // Configurações da janela
@@ -43,7 +44,7 @@ public class PedidoView extends JFrame {
         panelBotoes.add(new JLabel("Pesquisar (ID):"));
         panelBotoes.add(txtPesquisa);
         panelBotoes.add(btnPesquisar);
-        panelBotoes.add(new JLabel("Excluir Pedido ID:"));
+        panelBotoes.add(new JLabel("Excluir Pedido (ID):"));
         panelBotoes.add(txtExclusaoId);
         panelBotoes.add(btnExcluirPedido);
         panelBotoes.add(btnNovoPedido);
@@ -95,6 +96,17 @@ public class PedidoView extends JFrame {
                 listarPedidos(); // Atualiza a lista de pedidos ao clicar no botão "Listar"
             }
         });
+        
+        // Botão "Voltar"
+        JButton btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Fecha a janela atual
+                new PaginaInicialView().setVisible(true); // Abre a tela inicial
+            }
+        });
+        panelListar.add(btnVoltar);
     }
 
     // Método para listar pedidos
@@ -151,8 +163,9 @@ public class PedidoView extends JFrame {
     }
 
     public static void main(String[] args) {
+    	PedidoControl pedidoControl = new PedidoControl(); // Instancia o controle
         SwingUtilities.invokeLater(() -> {
-            PedidoView view = new PedidoView();
+            PedidoView view = new PedidoView(pedidoControl);
             view.setVisible(true);
         });
     }

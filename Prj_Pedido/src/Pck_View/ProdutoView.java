@@ -1,6 +1,8 @@
 package Pck_View;
 
 import javax.swing.*;
+
+import Pck_Control.ClienteControl;
 import Pck_Control.ProdutoControl;
 import Pck_Model.ProdutoModel;
 import java.awt.*;
@@ -14,7 +16,7 @@ public class ProdutoView extends JFrame {
     private JTextArea txtAreaProdutos;
     private JButton btnInserir, btnListar, btnAlterar, btnExcluir, btnPesquisar;
 
-    public ProdutoView() {
+    public ProdutoView(ProdutoControl pordutoControl) {
         // Configuração da interface (layout, campos, botões, etc.)
         setTitle("Gerenciamento de Produtos");
         setSize(700, 600);
@@ -83,6 +85,17 @@ public class ProdutoView extends JFrame {
         btnPesquisar = new JButton("Pesquisar");
         btnPesquisar.addActionListener(e -> pesquisarProduto());
         panelBotoes.add(btnPesquisar);
+        
+        // Botão "Voltar"
+        JButton btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Fecha a janela atual
+                new PaginaInicialView().setVisible(true); // Abre a tela inicial
+            }
+        });
+        panelBotoes.add(btnVoltar);
     }
 
     private void inserirProduto() {
@@ -164,6 +177,7 @@ public class ProdutoView extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ProdutoView().setVisible(true));
+    	ProdutoControl produtoControl = new ProdutoControl(); // Instancia o controle
+        SwingUtilities.invokeLater(() -> new ProdutoView(produtoControl).setVisible(true));
     }
 }

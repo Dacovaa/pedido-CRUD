@@ -14,7 +14,7 @@ public class ClienteView extends JFrame {
     private JTextArea txtAreaClientes;
     private ClienteControl clienteControl;
 
-    public ClienteView() {
+    public ClienteView(ClienteControl clienteControl) {
         clienteControl = new ClienteControl();
 
         // Configuração da interface
@@ -85,6 +85,17 @@ public class ClienteView extends JFrame {
         panelBotoes.add(btnPesquisar);
 
         add(panelBotoes, BorderLayout.SOUTH);
+        
+        // Botão "Voltar"
+        JButton btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Fecha a janela atual
+                new PaginaInicialView().setVisible(true); // Abre a tela inicial
+            }
+        });
+        panelBotoes.add(btnVoltar);
     }
 
     // Método de inserção de cliente
@@ -175,14 +186,15 @@ public class ClienteView extends JFrame {
     	            ));
     	        }
     	        
-    	        txtAreaClientes.setText(resultado.toString()); // Mostrar todos os resultados
+    	        txtAreaClientes.setText(resultado.toString()); // Mostra todos os resultados
     	    } else {
     	        JOptionPane.showMessageDialog(this, "Cliente não encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
     	    }
     	}
 
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ClienteView().setVisible(true));
-    }
+     public static void main(String[] args) {
+    	    ClienteControl clienteControl = new ClienteControl(); // Instancia o controle
+    	    SwingUtilities.invokeLater(() -> new ClienteView(clienteControl).setVisible(true)); // Passa o controle
+    	}
 }
