@@ -12,6 +12,8 @@ import Pck_Control.PedidoControl;
 import Pck_Model.ClienteModel;
 import Pck_Model.Item_pedidoModel;
 import Pck_Model.PedidoModel;
+import Pck_Model.ProdutoModel; // Importando o modelo do produto
+import Pck_Persistency.ProdutoPersistencia;
 
 public class PedidoView extends JFrame {
     private PedidoControl pedidoControl;
@@ -19,7 +21,7 @@ public class PedidoView extends JFrame {
     private ItemPedidoControl itemPedidoControl;
 
     private JComboBox<ClienteModel> comboClientes;
-    private JComboBox<String> comboProdutos; // Supondo que você tenha uma lista de produtos como Strings
+    private JComboBox<ProdutoModel> comboProdutos;
     private JTextField txtQuantidade;
     private JButton btnAdicionarItem;
     private JButton btnSalvarPedido;
@@ -44,7 +46,8 @@ public class PedidoView extends JFrame {
         add(comboClientes);
 
         // ComboBox para selecionar produto
-        comboProdutos = new JComboBox<>(new String[]{"Produto 1", "Produto 2", "Produto 3"}); // Exemplo de produtos
+        comboProdutos = new JComboBox<>();
+        carregarProdutos();
         add(new JLabel("Selecionar Produto:"));
         add(comboProdutos);
 
@@ -96,8 +99,18 @@ public class PedidoView extends JFrame {
         }
     }
 
+    private void carregarProdutos() {
+        ProdutoPersistencia produtoPersistencia = new ProdutoPersistencia();
+        List<ProdutoModel> produtos = produtoPersistencia.listarProdutos();
+        comboProdutos.removeAllItems(); // Limpa o combo box antes de adicionar novos produtos
+        
+        for (ProdutoModel produto : produtos) {
+            comboProdutos.addItem(produto); // Adiciona o objeto ProdutoModel diretamente
+        }
+    }
+
     private void adicionarItem() {
-        String produto = (String) comboProdutos.getSelectedItem();
+        ProdutoModel produtoSelecionado = (ProdutoModel) comboProdutos.getSelectedItem();
         int quantidade;
 
         try {
@@ -107,8 +120,9 @@ public class PedidoView extends JFrame {
             return;
         }
 
-        int produtoId = getProdutoId(produto); // Obtém o ID do produto
-        itemPedidoControl.adicionarItem(produtoId, quantidade);
+        // Adiciona o item usando o ID do produto e a quantidade
+        itemPedidoControl.adicionarItem(produtoSelecionado.getA02_Id(), quantidade, produtoSelecionado.getA02_Valor_Unitario());
+
         JOptionPane.showMessageDialog(this, "Item adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         txtQuantidade.setText(""); // Limpa o campo de quantidade
     }
@@ -132,13 +146,17 @@ public class PedidoView extends JFrame {
         StringBuilder sb = new StringBuilder();
         List<PedidoModel> pedidos = pedidoControl.listarPedidos();
         for (PedidoModel pedido : pedidos) {
-            sb.append("Pedido ID: ").append(pedido.getClienteId())
+            sb.append("Pedido ID: ").append(pedido.getId())
               .append(", Cliente ID: ").append(pedido.getClienteId())
               .append(", Data: ").append(pedido.getData())
               .append("\n");
             for (Item_pedidoModel item : pedido.getItens()) {
+            	double totalItem = item.getQuantidade() * item.getPrecoUnitario();
                 sb.append("    Produto ID: ").append(item.getProdutoId())
-                  .append(", Quantidade: ").append(item.getQuantidade()).append("\n");
+                  .append(", Quantidade: ").append(item.getQuantidade())
+                  .append(", Preço Unitário: ").append(item.getPrecoUnitario())
+                  .append(", Total: R$ ").append(totalItem)
+                  .append("\n");
             }
         }
         textAreaPedidos.setText(sb.toString());
@@ -149,20 +167,5 @@ public class PedidoView extends JFrame {
             PedidoView view = new PedidoView();
             view.setVisible(true);
         });
-    }
-
-    private int getProdutoId(String produto) {
-        // Aqui você deve implementar a lógica para retornar o ID do produto baseado na string
-        // Para este exemplo, vamos apenas retornar um ID fictício
-        switch (produto) {
-            case "Produto 1":
-                return 1;
-            case "Produto 2":
-                return 2;
-            case "Produto 3":
-                return 3;
-            default:
-                return -1; // Produto inválido
-        }
     }
 }

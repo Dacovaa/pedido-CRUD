@@ -5,9 +5,9 @@ public class Item_pedidoModel {
     private int pedidoId; // ID do pedido ao qual este item pertence
     private int produtoId; // ID do produto
     private int quantidade; // Quantidade comprada
+    private double precoUnitario; // Preço unitário do produto
 
-
-	// Getters e Setters
+    // Getters e Setters
     public int getId() {
         return id;
     }
@@ -38,5 +38,13 @@ public class Item_pedidoModel {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public double getPrecoUnitario() {
+        return precoUnitario; // Getter para o preço unitário
+    }
+
+    public void setPrecoUnitario(double precoUnitario) {
+        this.precoUnitario = precoUnitario; // Setter para o preço unitário
     }
 }

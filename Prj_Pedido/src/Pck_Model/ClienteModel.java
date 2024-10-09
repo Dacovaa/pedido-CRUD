@@ -56,4 +56,8 @@ public class ClienteModel {
     public void setA01_Credito(double a01_Credito) {
         this.a01_Credito = a01_Credito;
     }
+    @Override
+    public String toString() {
+        return a01_Nome; 
+    }
 }
