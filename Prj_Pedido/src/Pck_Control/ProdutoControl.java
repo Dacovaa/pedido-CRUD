@@ -1,34 +1,44 @@
 package Pck_Control;
 
-import Pck_Model.ProdutoModel;
-import Pck_Persistency.ProdutoPersistencia;
 import java.util.List;
 
-public class ProdutoControl {
-    ProdutoPersistencia persistirProduto = new ProdutoPersistencia();
+import Pck_Model.ProdutoModel;
+import Pck_Persistency.ProdutoPersistencia;
 
-    public void inserirProduto(int A02_Estoque, String A02_Descricao, double A02_Valor_Unitario) {
+public class ProdutoControl {
+    private ProdutoPersistencia produtoPersistencia;
+
+    public ProdutoControl() {
+        produtoPersistencia = new ProdutoPersistencia();
+    }
+
+    public void inserirProduto(int estoque, String descricao, double valorUnitario) {
         ProdutoModel produto = new ProdutoModel();
-        produto.setA02_Estoque(A02_Estoque);
-        produto.setA02_Descricao(A02_Descricao);
-        produto.setA02_Valor_Unitario(A02_Valor_Unitario);
-        persistirProduto.inserirProduto(produto);
+        produto.setA02_Descricao(descricao);
+        produto.setA02_Estoque(estoque);
+        produto.setA02_Valor_Unitario(valorUnitario);
+        produtoPersistencia.inserirProduto(produto);
     }
 
     public List<ProdutoModel> listarProdutos() {
-        return persistirProduto.listarProdutos();
+        return produtoPersistencia.listarProdutos();
     }
 
-    public void alterarProduto(int A02_Id, int A02_Estoque, String A02_Descricao, double A02_Valor_Unitario) {
+    public void alterarProduto(int id, int estoque, String descricao, double valorUnitario) {
         ProdutoModel produto = new ProdutoModel();
-        produto.setA02_Id(A02_Id);
-        produto.setA02_Estoque(A02_Estoque);
-        produto.setA02_Descricao(A02_Descricao);
-        produto.setA02_Valor_Unitario(A02_Valor_Unitario);
-        persistirProduto.alterarProduto(produto);
+        produto.setA02_Id(id);
+        produto.setA02_Descricao(descricao);
+        produto.setA02_Estoque(estoque);
+        produto.setA02_Valor_Unitario(valorUnitario);
+        produtoPersistencia.alterarProduto(produto);
     }
 
-    public void excluirProduto(int A02_Id) {
-        persistirProduto.excluirProduto(A02_Id);
+    public void excluirProduto(int id) {
+        produtoPersistencia.excluirProduto(id);
     }
+
+    public List<ProdutoModel> pesquisarProduto(String descricao) {
+        return produtoPersistencia.pesquisarProduto(descricao); // Retorna a lista de produtos encontrados
+    }
+
 }

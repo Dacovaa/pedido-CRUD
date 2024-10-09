@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class Conexao_DAO {
     public Connection obj_connection = null;
-    private static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://localhost:3306/db_pedido";
     private static final String USER = "root";
     private static final String PASSWORD = "";

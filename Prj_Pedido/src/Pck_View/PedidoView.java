@@ -1,113 +1,168 @@
 package Pck_View;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import java.text.SimpleDateFormat;
-import java.sql.Date;
-import java.text.ParseException;
-
+import Pck_Control.ClienteControl;
+import Pck_Control.ItemPedidoControl;
 import Pck_Control.PedidoControl;
+import Pck_Model.ClienteModel;
+import Pck_Model.Item_pedidoModel;
+import Pck_Model.PedidoModel;
 
-public class PedidoView extends JFrame{
-	
-	private JTextField tfIdCliente;
-	private JTextField tfDate;
-	private JTextField tfValorTotal;
-	private JButton btnInserir;
-	private PedidoControl pedidoControl;
-	
-	public PedidoView() {
-		pedidoControl = new PedidoControl();
-		
-		setTitle("Cadastro de Pedidos");
-        setSize(400, 250);
+public class PedidoView extends JFrame {
+    private PedidoControl pedidoControl;
+    private ClienteControl clienteControl;
+    private ItemPedidoControl itemPedidoControl;
+
+    private JComboBox<ClienteModel> comboClientes;
+    private JComboBox<String> comboProdutos; // Supondo que você tenha uma lista de produtos como Strings
+    private JTextField txtQuantidade;
+    private JButton btnAdicionarItem;
+    private JButton btnSalvarPedido;
+    private JButton btnListarPedidos;
+    private JTextArea textAreaPedidos;
+
+    public PedidoView() {
+        pedidoControl = new PedidoControl();
+        clienteControl = new ClienteControl();
+        itemPedidoControl = new ItemPedidoControl();
+
+        // Configurações da janela
+        setTitle("Gerenciar Pedidos");
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(null);
-        
-        JLabel lblIdCliente = new JLabel("IdCliente:");
-        lblIdCliente.setBounds(20, 20, 100, 25);
-        add(lblIdCliente);
-        
-        tfIdCliente = new JTextField();
-        tfIdCliente.setBounds(120, 20, 200, 25);
-        add(tfIdCliente);
-        
-        JLabel lblDate = new JLabel("Data:");
-        lblDate.setBounds(20, 60, 100, 25);
-        add(lblDate);
-        
-        tfDate = new JTextField();
-        tfDate.setBounds(120, 60, 200, 25);
-        add(tfDate);
-        
-        JLabel lblValorTotal = new JLabel("Valor Total:");
-        lblValorTotal.setBounds(20, 100, 100, 25);
-        add(lblValorTotal);
-        
-        tfValorTotal = new JTextField();
-        tfValorTotal.setBounds(120, 100, 200, 25);
-        add(tfValorTotal);
-        
-        btnInserir = new JButton("Inserir");
-        btnInserir.setBounds(150, 150, 100, 25);
-        add(btnInserir);
+        setLayout(new FlowLayout());
 
-        btnInserir.addActionListener((ActionListener) new ActionListener() {
+        // ComboBox para selecionar cliente
+        comboClientes = new JComboBox<>();
+        carregarClientes();
+        add(new JLabel("Selecionar Cliente:"));
+        add(comboClientes);
+
+        // ComboBox para selecionar produto
+        comboProdutos = new JComboBox<>(new String[]{"Produto 1", "Produto 2", "Produto 3"}); // Exemplo de produtos
+        add(new JLabel("Selecionar Produto:"));
+        add(comboProdutos);
+
+        // Campo para quantidade
+        txtQuantidade = new JTextField(5);
+        add(new JLabel("Quantidade:"));
+        add(txtQuantidade);
+
+        // Botões
+        btnAdicionarItem = new JButton("Adicionar Item");
+        btnSalvarPedido = new JButton("Salvar Pedido");
+        btnListarPedidos = new JButton("Listar Pedidos");
+        add(btnAdicionarItem);
+        add(btnSalvarPedido);
+        add(btnListarPedidos);
+
+        // Área de texto para listar pedidos
+        textAreaPedidos = new JTextArea(10, 40);
+        textAreaPedidos.setEditable(false);
+        add(new JScrollPane(textAreaPedidos));
+
+        // Ações dos botões
+        btnAdicionarItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                inserirPedido();
+                adicionarItem();
             }
         });
-	}
-	
-	private void inserirPedido() {
-		 int A01_Id = 0;
-		 double A03_Valor_Total;
-		 Date A03_Data;
-		 
-		 try {
-			 A01_Id = Integer.parseInt(tfIdCliente.getText());
-		 } catch (NumberFormatException e) {
-			 JOptionPane.showMessageDialog(this, "O estoque de conter apenas numeros", "Erro", JOptionPane.ERROR_MESSAGE);
-		 }
-		 
-		 
-		 try {
-			 SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-			 java.util.Date Data = dateFormat.parse(tfDate.getText());
-			 A03_Data = new Date (Data.getTime());
-		 } catch (ParseException e){
-			 JOptionPane.showMessageDialog(this, "Data deve ser no formato dd-MM-yyyy", "Erro", JOptionPane.ERROR_MESSAGE);
-			 return;
-		 }
-		 
-		 try {
-	            A03_Valor_Total = Double.parseDouble(tfValorTotal.getText());
-	        } catch (NumberFormatException e) {
-	            JOptionPane.showMessageDialog(this, "Valor Total deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-	            return;
-	        }
-		 
-		 pedidoControl.inserirPedido(A01_Id, A03_Data, A03_Valor_Total);
-		 JOptionPane.showMessageDialog(this, "Pedido inserido com sucesso", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
 
-	}
-	
-	 public static void main(String[] args) {
-	        SwingUtilities.invokeLater(new Runnable() {
-	            @Override
-	            public void run() {
-	                new PedidoView().setVisible(true);
-	            }
-	        });
-	    }
-	
+        btnSalvarPedido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                salvarPedido();
+            }
+        });
+
+        btnListarPedidos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listarPedidos();
+            }
+        });
+    }
+
+    private void carregarClientes() {
+        List<ClienteModel> clientes = clienteControl.listarCliente();
+        for (ClienteModel cliente : clientes) {
+            comboClientes.addItem(cliente);
+        }
+    }
+
+    private void adicionarItem() {
+        String produto = (String) comboProdutos.getSelectedItem();
+        int quantidade;
+
+        try {
+            quantidade = Integer.parseInt(txtQuantidade.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Quantidade inválida!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int produtoId = getProdutoId(produto); // Obtém o ID do produto
+        itemPedidoControl.adicionarItem(produtoId, quantidade);
+        JOptionPane.showMessageDialog(this, "Item adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        txtQuantidade.setText(""); // Limpa o campo de quantidade
+    }
+
+    private void salvarPedido() {
+        ClienteModel clienteSelecionado = (ClienteModel) comboClientes.getSelectedItem();
+        PedidoModel novoPedido = new PedidoModel();
+        novoPedido.setClienteId(clienteSelecionado.getA01_Id()); // ID do cliente
+        novoPedido.setData(new java.util.Date()); // Data atual
+
+        for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
+            novoPedido.adicionarItem(item);
+        }
+
+        pedidoControl.inserirPedido(novoPedido);
+        JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        itemPedidoControl.limparItens(); // Limpa os itens do pedido após salvar
+    }
+
+    private void listarPedidos() {
+        StringBuilder sb = new StringBuilder();
+        List<PedidoModel> pedidos = pedidoControl.listarPedidos();
+        for (PedidoModel pedido : pedidos) {
+            sb.append("Pedido ID: ").append(pedido.getClienteId())
+              .append(", Cliente ID: ").append(pedido.getClienteId())
+              .append(", Data: ").append(pedido.getData())
+              .append("\n");
+            for (Item_pedidoModel item : pedido.getItens()) {
+                sb.append("    Produto ID: ").append(item.getProdutoId())
+                  .append(", Quantidade: ").append(item.getQuantidade()).append("\n");
+            }
+        }
+        textAreaPedidos.setText(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            PedidoView view = new PedidoView();
+            view.setVisible(true);
+        });
+    }
+
+    private int getProdutoId(String produto) {
+        // Aqui você deve implementar a lógica para retornar o ID do produto baseado na string
+        // Para este exemplo, vamos apenas retornar um ID fictício
+        switch (produto) {
+            case "Produto 1":
+                return 1;
+            case "Produto 2":
+                return 2;
+            case "Produto 3":
+                return 3;
+            default:
+                return -1; // Produto inválido
+        }
+    }
 }

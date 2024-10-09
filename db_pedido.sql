@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01/10/2024 às 02:28
+-- Tempo de geração: 09/10/2024 às 01:48
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -38,21 +38,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Deletar_Cliente` (IN `V_A01_Id
     COMMIT;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Deletar_ItemPedido` (IN `V_A04_Id` INT, IN `V_A03_Id` INT, IN `V_A02_Id` INT)   BEGIN
-    -- Excluir o item de pedido
-    DELETE FROM item_pedido_04 WHERE A04_Id = V_A04_Id AND A03_Id = V_A03_Id AND A02_Id = V_A02_Id;
-
-    COMMIT;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Deletar_Pedido` (IN `V_A03_Id` INT)   BEGIN
-    -- Excluir itens de pedido associados ao pedido
-    DELETE FROM item_pedido_04 WHERE A03_Id = V_A03_Id;
-    
-    -- Excluir o pedido
-    DELETE FROM pedido_03 WHERE A03_Id = V_A03_Id;
-
-    COMMIT;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Deletar_Pedido` (IN `p_id_pedido` INT)   BEGIN
+    DELETE FROM pedido_03
+    WHERE A03_Id = p_id_pedido;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Deletar_Produto` (IN `V_A02_Id` INT)   BEGIN
@@ -81,34 +69,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Cliente` (IN `V_A01_No
 commit;
 end$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Item` (IN `V_A04_Id` INT, IN `V_A03_Id` INT, IN `V_A02_Id` INT, IN `V_A04_Quantidade` INT, IN `V_A04_Valor_Item` DECIMAL(10,2))   begin insert into Item_Pedido_04 (
-    A04_Id,
-    A03_Id,
-    A02_Id,
-    A04_Quantidade,
-    A04_Valor_Item
-) values (
-    V_A04_Id,
-    V_A03_Id,
-    V_A02_Id,
-    V_A04_Quantidade,
-    V_A04_Valor_Item
-);	
-commit;
-end$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Pedido` (IN `V_A01_Id` INT, IN `V_A03_Data` DATE, IN `V_A03_Valor_Total` DECIMAL(10,2))   begin insert into Pedido_03(
-	A01_Id,
-    A03_Data,
-    A03_Valor_Total
-) 
-values (
-	V_A01_Id,
-    V_A03_Data,
-    V_A03_Valor_Total
-);	
-commit;
-end$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Pedido` (IN `p_id_cliente` INT, IN `p_data` DATE, IN `p_valor_total` DECIMAL(10,2))   BEGIN
+    INSERT INTO pedido_03 (A01_Id, A03_Data, A03_Valor_Total)
+    VALUES (p_id_cliente, p_data, p_valor_total);
+END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Produto` (IN `V_A02_Descricao` VARCHAR(50), IN `V_A02_Valor_Unitario` DECIMAL(10,2), IN `V_A02_Estoque` INT)   begin insert into Produto_02 (
 	A02_Descricao,
@@ -123,6 +87,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Inserir_Produto` (IN `V_A02_De
 commit;
 end$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Listar_Clientes` ()   BEGIN
+    -- Seleciona todos os clientes
+    SELECT 
+        A01_Id,
+        A01_Nome, 
+        A01_Endereco, 
+        A01_Telefone, 
+        A01_CPF, 
+        A01_Credito
+    FROM 
+        cliente_01;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Listar_Pedidos` ()   BEGIN
+    SELECT A03_Id, A01_Id, A03_Data, A03_Valor_Total
+    FROM pedido_03;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Listar_Produtos` ()   BEGIN
     -- Seleciona todos os produtos
     SELECT 
@@ -134,21 +116,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Listar_Produtos` ()   BEGIN
         produto_02;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_Cliente` (IN `V_A01_Id` INT)   BEGIN
-    SELECT * FROM cliente_01 WHERE A01_Id = V_A01_Id;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_Cliente` (IN `nome` VARCHAR(255))   BEGIN
+    SELECT * 
+    FROM cliente_01 
+    WHERE A01_Nome LIKE CONCAT('%', nome, '%');
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_ItemPedido` (IN `V_A04_Id` INT, IN `V_A03_Id` INT, IN `V_A02_Id` INT)   BEGIN
-    SELECT * FROM item_pedido_04
-    WHERE A04_Id = V_A04_Id AND A03_Id = V_A03_Id AND A02_Id = V_A02_Id;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_Pedido` (IN `V_A03_Id` INT)   BEGIN
-    SELECT * FROM pedido_03 WHERE A03_Id = V_A03_Id;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_Produto` (IN `V_A02_Id` INT)   BEGIN
-    SELECT * FROM produto_02 WHERE A02_Id = V_A02_Id;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Select_Produto` (IN `descricao` VARCHAR(255))   BEGIN
+    SELECT * 
+    FROM produto_02 
+    WHERE A02_Descricao LIKE CONCAT('%', descricao, '%');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_Cliente` (IN `V_A01_Id` INT, IN `V_A01_Nome` VARCHAR(50), IN `V_A01_Endereco` VARCHAR(50), IN `V_A01_Telefone` CHAR(11), IN `V_A01_CPF` CHAR(11), IN `V_A01_Credito` DECIMAL(10,2))   BEGIN
@@ -162,20 +139,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_Cliente` (IN `V_A01_Id`
     COMMIT;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_ItemPedido` (IN `V_A04_Id` INT, IN `V_A03_Id` INT, IN `V_A02_Id` INT, IN `V_A04_Quantidade` INT, IN `V_A04_Valor_Item` DECIMAL(10,2))   BEGIN
-    UPDATE item_pedido_04
-    SET A04_Quantidade = V_A04_Quantidade,
-        A04_Valor_Item = V_A04_Valor_Item
-    WHERE A04_Id = V_A04_Id AND A03_Id = V_A03_Id AND A02_Id = V_A02_Id;
-    COMMIT;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_Pedido` (IN `V_A03_Id` INT, IN `V_A03_Data` DATE, IN `V_A03_Valor_Total` DECIMAL(10,2))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_Pedido` (IN `p_id_pedido` INT, IN `p_id_cliente` INT, IN `p_data` DATE, IN `p_valor_total` DECIMAL(10,2))   BEGIN
     UPDATE pedido_03
-    SET A03_Data = V_A03_Data,
-        A03_Valor_Total = V_A03_Valor_Total
-    WHERE A03_Id = V_A03_Id;
-    COMMIT;
+    SET A01_Id = p_id_cliente,
+        A03_Data = p_data,
+        A03_Valor_Total = p_valor_total
+    WHERE A03_Id = p_id_pedido;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Proc_Update_Produto` (IN `V_A02_Id` INT, IN `V_A02_Descricao` VARCHAR(50), IN `V_A02_Valor_Unitario` DECIMAL(10,2), IN `V_A02_Estoque` INT)   BEGIN
@@ -213,7 +182,9 @@ INSERT INTO `cliente_01` (`A01_Id`, `A01_Nome`, `A01_Endereco`, `A01_Telefone`, 
 (2, 'Felipe', 'Rua Pinto', '11999998888', '11111111111', 1000000.00),
 (3, 'Daniel', 'rua jota', '74999259855', '56734565488', 1000.00),
 (4, 'mateus gay', 'gaylandia', '11999242424', '45634598766', 24.00),
-(5, 'Gabriel bixa', 'bixalandia', '1124242424', '24242424242', 24.00);
+(5, 'Gabriel bixa', 'bixalandia', '1124242424', '24242424242', 24.00),
+(6, 'lula', 'palacio do planalto', '13131313131', '13131313131', 13.00),
+(7, 'luiz', 'teste', '1111111', '1111111', 11111.00);
 
 -- --------------------------------------------------------
 
@@ -223,10 +194,10 @@ INSERT INTO `cliente_01` (`A01_Id`, `A01_Nome`, `A01_Endereco`, `A01_Telefone`, 
 
 CREATE TABLE `item_pedido_04` (
   `A04_Id` int(11) NOT NULL,
-  `A03_Id` int(11) NOT NULL,
-  `A02_Id` int(11) NOT NULL,
+  `A03_Id` int(11) DEFAULT NULL,
+  `A02_Id` int(11) DEFAULT NULL,
   `A04_Quantidade` int(11) NOT NULL,
-  `A04_Valor_Item` decimal(10,2) NOT NULL
+  `A04_Preco_Unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -290,7 +261,8 @@ ALTER TABLE `cliente_01`
 -- Índices de tabela `item_pedido_04`
 --
 ALTER TABLE `item_pedido_04`
-  ADD PRIMARY KEY (`A03_Id`,`A02_Id`,`A04_Id`),
+  ADD PRIMARY KEY (`A04_Id`),
+  ADD KEY `A03_Id` (`A03_Id`),
   ADD KEY `A02_Id` (`A02_Id`);
 
 --
@@ -314,7 +286,13 @@ ALTER TABLE `produto_02`
 -- AUTO_INCREMENT de tabela `cliente_01`
 --
 ALTER TABLE `cliente_01`
-  MODIFY `A01_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `A01_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de tabela `item_pedido_04`
+--
+ALTER TABLE `item_pedido_04`
+  MODIFY `A04_Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `pedido_03`
@@ -336,8 +314,8 @@ ALTER TABLE `produto_02`
 -- Restrições para tabelas `item_pedido_04`
 --
 ALTER TABLE `item_pedido_04`
-  ADD CONSTRAINT `item_pedido_04_ibfk_1` FOREIGN KEY (`A02_Id`) REFERENCES `produto_02` (`A02_Id`),
-  ADD CONSTRAINT `item_pedido_04_ibfk_2` FOREIGN KEY (`A03_Id`) REFERENCES `pedido_03` (`A03_Id`);
+  ADD CONSTRAINT `item_pedido_04_ibfk_1` FOREIGN KEY (`A03_Id`) REFERENCES `pedido_03` (`A03_Id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `item_pedido_04_ibfk_2` FOREIGN KEY (`A02_Id`) REFERENCES `produto_02` (`A02_Id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `pedido_03`

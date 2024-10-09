@@ -10,13 +10,14 @@ import java.util.List;
 
 public class ProdutoView extends JFrame {
     private ProdutoControl produtoControl = new ProdutoControl();
-    private JTextField txtDescricao, txtEstoque, txtValorUnitario;
+    private JTextField txtDescricao, txtEstoque, txtValorUnitario, txtId;
     private JTextArea txtAreaProdutos;
+    private JButton btnInserir, btnListar, btnAlterar, btnExcluir, btnPesquisar;
 
     public ProdutoView() {
         // Configuração da interface (layout, campos, botões, etc.)
         setTitle("Gerenciamento de Produtos");
-        setSize(500, 400);
+        setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -33,6 +34,10 @@ public class ProdutoView extends JFrame {
         panelPrincipal.add(panelEntrada, BorderLayout.NORTH);
 
         // Campos de entrada
+        panelEntrada.add(new JLabel("ID (para alterar/excluir):"));
+        txtId = new JTextField();
+        panelEntrada.add(txtId);
+
         panelEntrada.add(new JLabel("Descrição:"));
         txtDescricao = new JTextField();
         panelEntrada.add(txtDescricao);
@@ -46,8 +51,9 @@ public class ProdutoView extends JFrame {
         panelEntrada.add(txtValorUnitario);
 
         // Área de texto para listar produtos
-        txtAreaProdutos = new JTextArea();
+        txtAreaProdutos = new JTextArea(10, 50);
         txtAreaProdutos.setEditable(false);
+        txtAreaProdutos.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(txtAreaProdutos);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
@@ -58,78 +64,106 @@ public class ProdutoView extends JFrame {
         panelPrincipal.add(panelBotoes, BorderLayout.SOUTH);
 
         // Botões
-        JButton btnInserir = new JButton("Inserir");
-        btnInserir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                inserirProduto();
-            }
-        });
+        btnInserir = new JButton("Inserir");
+        btnInserir.addActionListener(e -> inserirProduto());
         panelBotoes.add(btnInserir);
 
-        JButton btnListar = new JButton("Listar");
-        btnListar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                listarProdutos();
-            }
-        });
+        btnListar = new JButton("Listar");
+        btnListar.addActionListener(e -> listarProdutos());
         panelBotoes.add(btnListar);
 
-        JButton btnAlterar = new JButton("Alterar");
-        btnAlterar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                alterarProduto();
-            }
-        });
+        btnAlterar = new JButton("Alterar");
+        btnAlterar.addActionListener(e -> alterarProduto());
         panelBotoes.add(btnAlterar);
 
-        JButton btnExcluir = new JButton("Excluir");
-        btnExcluir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                excluirProduto();
-            }
-        });
+        btnExcluir = new JButton("Excluir");
+        btnExcluir.addActionListener(e -> excluirProduto());
         panelBotoes.add(btnExcluir);
+
+        btnPesquisar = new JButton("Pesquisar");
+        btnPesquisar.addActionListener(e -> pesquisarProduto());
+        panelBotoes.add(btnPesquisar);
     }
 
     private void inserirProduto() {
-        String descricao = txtDescricao.getText();
-        int estoque = Integer.parseInt(txtEstoque.getText());
-        double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
-        produtoControl.inserirProduto(estoque, descricao, valorUnitario);
-        JOptionPane.showMessageDialog(this, "Produto inserido com sucesso!");
-        listarProdutos();
+        try {
+            String descricao = txtDescricao.getText();
+            int estoque = Integer.parseInt(txtEstoque.getText());
+            double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
+            produtoControl.inserirProduto(estoque, descricao, valorUnitario);
+            JOptionPane.showMessageDialog(this, "Produto inserido com sucesso!");
+            listarProdutos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao inserir produto. Verifique os campos numéricos.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void listarProdutos() {
         txtAreaProdutos.setText("");
         List<ProdutoModel> produtos = produtoControl.listarProdutos();
+        String header = String.format("%-5s %-20s %-15s %-15s\n", "ID", "Descrição", "Estoque", "Valor Unitário");
+        txtAreaProdutos.append(header);
+        txtAreaProdutos.append("-------------------------------------------------------------\n");
+
         for (ProdutoModel produto : produtos) {
-            txtAreaProdutos.append("ID: " + produto.getA02_Id() + ", Descrição: " + produto.getA02_Descricao() + 
-                                   ", Estoque: " + produto.getA02_Estoque() + ", Valor Unitário: " + produto.getA02_Valor_Unitario() + "\n");
+            txtAreaProdutos.append(String.format("%-5d %-20s %-15d %-15.2f\n",
+                    produto.getA02_Id(),
+                    produto.getA02_Descricao(),
+                    produto.getA02_Estoque(),
+                    produto.getA02_Valor_Unitario()));
         }
     }
 
+    private void pesquisarProduto() {
+        String descricao = txtDescricao.getText(); // Usar o campo de descrição para pesquisa
+        List<ProdutoModel> produtos = produtoControl.pesquisarProduto(descricao);
+        
+        txtAreaProdutos.setText(""); // Limpa a área de texto antes de listar os resultados
+
+        if (!produtos.isEmpty()) {
+            String header = String.format("%-5s %-20s %-15s %-15s\n", "ID", "Descrição", "Estoque", "Valor Unitário");
+            txtAreaProdutos.append(header);
+            txtAreaProdutos.append("-------------------------------------------------------------\n");
+
+            for (ProdutoModel produto : produtos) {
+                txtAreaProdutos.append(String.format("%-5d %-20s %-15d %-15.2f\n",
+                        produto.getA02_Id(),
+                        produto.getA02_Descricao(),
+                        produto.getA02_Estoque(),
+                        produto.getA02_Valor_Unitario()));
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum produto encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
     private void alterarProduto() {
-        String idStr = JOptionPane.showInputDialog("Informe o ID do produto a ser alterado:");
-        int id = Integer.parseInt(idStr);
-        String descricao = txtDescricao.getText();
-        int estoque = Integer.parseInt(txtEstoque.getText());
-        double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
-        produtoControl.alterarProduto(id, estoque, descricao, valorUnitario);        // Id dando erro na procedure
-        JOptionPane.showMessageDialog(this, "Produto alterado com sucesso!");
-        listarProdutos();
+        try {
+            int id = Integer.parseInt(txtId.getText());
+            String descricao = txtDescricao.getText();
+            int estoque = Integer.parseInt(txtEstoque.getText());
+            double valorUnitario = Double.parseDouble(txtValorUnitario.getText());
+            produtoControl.alterarProduto(id, estoque, descricao, valorUnitario);
+            JOptionPane.showMessageDialog(this, "Produto alterado com sucesso!");
+            listarProdutos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao alterar produto. Verifique os campos numéricos.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void excluirProduto() {
-        String idStr = JOptionPane.showInputDialog("Informe o ID do produto a ser excluído:");
-        int id = Integer.parseInt(idStr);
-        produtoControl.excluirProduto(id);
-        JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
-        listarProdutos();
+        try {
+            int id = Integer.parseInt(txtId.getText());
+            produtoControl.excluirProduto(id);
+            JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
+            listarProdutos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir produto. Verifique o ID.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
-        ProdutoView view = new ProdutoView();
-        view.setVisible(true);
+        SwingUtilities.invokeLater(() -> new ProdutoView().setVisible(true));
     }
 }

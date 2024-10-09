@@ -15,7 +15,7 @@ public class ProdutoPersistencia {
     String queryAlterar = "{CALL Proc_Update_Produto(?, ?, ?, ?)}";
     String queryExcluir = "{CALL Proc_Deletar_Produto(?)}";
     String querySelect = "{CALL Proc_Select_Produto(?)}"; 
-    String queryListar = "{CALL Proc_Listar_Produtos()}"; // Adicione o procedimento para listar
+    String queryListar = "{CALL Proc_Listar_Produtos()}"; 
 
     // Método para inserir produto
     public void inserirProduto(ProdutoModel produto) {
@@ -78,4 +78,28 @@ public class ProdutoPersistencia {
             System.out.println(e);
         }
     }
+
+    // Método para pesquisar produto por nome
+    public List<ProdutoModel> pesquisarProduto(String descricao) {
+        List<ProdutoModel> lista = new ArrayList<>();
+        try {
+            Connection conn = oConectar.getConnection();
+            CallableStatement oCall = conn.prepareCall(querySelect);
+            oCall.setString(1, descricao); // Certifique-se de que o parâmetro está sendo usado corretamente
+            ResultSet rs = oCall.executeQuery();
+            
+            while (rs.next()) {
+                ProdutoModel produto = new ProdutoModel();
+                produto.setA02_Id(rs.getInt("A02_Id"));
+                produto.setA02_Estoque(rs.getInt("A02_Estoque"));
+                produto.setA02_Descricao(rs.getString("A02_Descricao"));
+                produto.setA02_Valor_Unitario(rs.getDouble("A02_Valor_Unitario"));
+                lista.add(produto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
 }

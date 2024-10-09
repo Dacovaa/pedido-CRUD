@@ -1,18 +1,47 @@
 package Pck_Control;
+
+import java.util.List;
+
 import Pck_Model.ClienteModel;
 import Pck_Persistency.ClientePersistencia;
 
 public class ClienteControl {
-	
-	ClienteModel cliente = new ClienteModel();
-	ClientePersistencia persistirCliente = new ClientePersistencia();
-	public void inserirCliente(String A01_Nome, String A01_Endereco, String A01_Telefone, String A01_CPF, double A01_Credito) {
-		cliente.setA01_Nome(A01_Nome);
-		cliente.setA01_Endereco(A01_Endereco);
-		cliente.setA01_Telefone(A01_Telefone);
-		cliente.setA01_CPF(A01_CPF);
-		cliente.setA01_Credito(A01_Credito);
-		persistirCliente.inserirCliente(cliente);
-	}
-}
+    private ClientePersistencia clientePersistencia;
 
+    public ClienteControl() {
+        clientePersistencia = new ClientePersistencia();
+    }
+
+    public void inserirCliente(String nome, String endereco, String telefone, String cpf, double credito) {
+        ClienteModel cliente = new ClienteModel();
+        cliente.setA01_Nome(nome);
+        cliente.setA01_Endereco(endereco);
+        cliente.setA01_Telefone(telefone);
+        cliente.setA01_CPF(cpf);
+        cliente.setA01_Credito(credito);
+        clientePersistencia.inserirCliente(cliente);
+    }
+
+    public List<ClienteModel> listarCliente() {
+        return clientePersistencia.listarCliente();
+    }
+
+    public void alterarCliente(int id, String nome, String endereco, String telefone, String cpf, double credito) {
+        ClienteModel cliente = new ClienteModel();
+        cliente.setA01_Id(id);
+        cliente.setA01_Nome(nome);
+        cliente.setA01_Endereco(endereco);
+        cliente.setA01_Telefone(telefone);
+        cliente.setA01_CPF(cpf);
+        cliente.setA01_Credito(credito);
+        clientePersistencia.alterarCliente(cliente);
+    }
+
+    public void excluirCliente(int id) {
+        clientePersistencia.excluirCliente(id);
+    }
+
+    public List<ClienteModel> pesquisarCliente(String nome) {
+        return clientePersistencia.pesquisarCliente(nome); // Retorna a lista de clientes encontrados
+    }
+}

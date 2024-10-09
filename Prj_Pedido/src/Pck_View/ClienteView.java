@@ -1,113 +1,188 @@
 package Pck_View;
 
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
 import Pck_Control.ClienteControl;
+import Pck_Model.ClienteModel;
 
-public class ClienteView extends JFrame{
-	
-	private JTextField tfNome;
-    private JTextField tfEndereco;
-    private JTextField tfTelefone;
-    private JTextField tfCpf;
-    private JTextField tfCredito;
-    private JButton btnInserir;
+public class ClienteView extends JFrame {
+
+    private JTextField txtNome, txtEndereco, txtTelefone, txtCpf, txtCredito, txtId;
+    private JTextArea txtAreaClientes;
     private ClienteControl clienteControl;
-    
+
     public ClienteView() {
-    	clienteControl = new ClienteControl();
-    	
-    	setTitle("Cadastro de Cliente");
-        setSize(400, 300);
+        clienteControl = new ClienteControl();
+
+        // Configuração da interface
+        setTitle("Gerenciamento de Clientes");
+        setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(null);
-        
-        JLabel lblNome = new JLabel("Nome:");
-        lblNome.setBounds(20, 20, 100, 25);
-        add(lblNome);
-        
-        tfNome = new JTextField();
-        tfNome.setBounds(120, 20, 200, 25);
-        add(tfNome);
-        
-        JLabel lblEndereco = new JLabel("Endereço:");
-        lblEndereco.setBounds(20, 60, 100, 25);
-        add(lblEndereco);
+        setLayout(new BorderLayout());
 
-        tfEndereco = new JTextField();
-        tfEndereco.setBounds(120, 60, 200, 25);
-        add(tfEndereco);
+        // Painel de entrada de dados
+        JPanel panelEntrada = new JPanel(new GridLayout(6, 2, 5, 5));
+        panelEntrada.setBorder(BorderFactory.createTitledBorder("Dados do Cliente"));
 
-        JLabel lblTelefone = new JLabel("Telefone:");
-        lblTelefone.setBounds(20, 100, 100, 25);
-        add(lblTelefone);
+        panelEntrada.add(new JLabel("ID (para alterar/excluir):"));
+        txtId = new JTextField();
+        panelEntrada.add(txtId);
 
-        tfTelefone = new JTextField();
-        tfTelefone.setBounds(120, 100, 200, 25);
-        add(tfTelefone);
+        panelEntrada.add(new JLabel("Nome:"));
+        txtNome = new JTextField();
+        panelEntrada.add(txtNome);
 
-        JLabel lblCpf = new JLabel("CPF:");
-        lblCpf.setBounds(20, 140, 100, 25);
-        add(lblCpf);
+        panelEntrada.add(new JLabel("Endereço:"));
+        txtEndereco = new JTextField();
+        panelEntrada.add(txtEndereco);
 
-        tfCpf = new JTextField();
-        tfCpf.setBounds(120, 140, 200, 25);
-        add(tfCpf);
+        panelEntrada.add(new JLabel("Telefone:"));
+        txtTelefone = new JTextField();
+        panelEntrada.add(txtTelefone);
 
-        JLabel lblCredito = new JLabel("Crédito:");
-        lblCredito.setBounds(20, 180, 100, 25);
-        add(lblCredito);
+        panelEntrada.add(new JLabel("CPF:"));
+        txtCpf = new JTextField();
+        panelEntrada.add(txtCpf);
 
-        
-        tfCredito = new JTextField();
-        tfCredito.setBounds(120, 180, 200, 25);
-        add(tfCredito);
+        panelEntrada.add(new JLabel("Crédito:"));
+        txtCredito = new JTextField();
+        panelEntrada.add(txtCredito);
 
-        btnInserir = new JButton("Inserir");
-        btnInserir.setBounds(150, 220, 100, 25);
-        add(btnInserir);
+        add(panelEntrada, BorderLayout.NORTH);
 
-        btnInserir.addActionListener((ActionListener) new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                inserirCliente();
-            }
-        });
+        // Área de texto para listar clientes
+        txtAreaClientes = new JTextArea(10, 50);
+        txtAreaClientes.setEditable(false);
+        txtAreaClientes.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JScrollPane scrollPane = new JScrollPane(txtAreaClientes);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Painel de botões
+        JPanel panelBotoes = new JPanel(new FlowLayout());
+        panelBotoes.setBorder(BorderFactory.createTitledBorder("Ações"));
+
+        JButton btnInserir = new JButton("Inserir");
+        btnInserir.addActionListener(e -> inserirCliente());
+        panelBotoes.add(btnInserir);
+
+        JButton btnListar = new JButton("Listar");
+        btnListar.addActionListener(e -> listarCliente());
+        panelBotoes.add(btnListar);
+
+        JButton btnAlterar = new JButton("Alterar");
+        btnAlterar.addActionListener(e -> alterarCliente());
+        panelBotoes.add(btnAlterar);
+
+        JButton btnExcluir = new JButton("Excluir");
+        btnExcluir.addActionListener(e -> excluirCliente());
+        panelBotoes.add(btnExcluir);
+
+        JButton btnPesquisar = new JButton("Pesquisar");
+        btnPesquisar.addActionListener(e -> pesquisarCliente());
+        panelBotoes.add(btnPesquisar);
+
+        add(panelBotoes, BorderLayout.SOUTH);
     }
-    
+
+    // Método de inserção de cliente
     private void inserirCliente() {
-        String nome = tfNome.getText();
-        String endereco = tfEndereco.getText();
-        String telefone = tfTelefone.getText();
-        String cpf = tfCpf.getText();
+        String nome = txtNome.getText();
+        String endereco = txtEndereco.getText();
+        String telefone = txtTelefone.getText();
+        String cpf = txtCpf.getText();
         double credito;
 
         try {
-            credito = Double.parseDouble(tfCredito.getText());
+            credito = Double.parseDouble(txtCredito.getText());
+            clienteControl.inserirCliente(nome, endereco, telefone, cpf, credito);
+            JOptionPane.showMessageDialog(this, "Cliente inserido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Crédito deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
         }
-
-        clienteControl.inserirCliente(nome, endereco, telefone, cpf, credito);
-        JOptionPane.showMessageDialog(this, "Cliente inserido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // Método de listagem de clientes
+    private void listarCliente() {
+        txtAreaClientes.setText("");
+        List<ClienteModel> clientes = clienteControl.listarCliente();
+
+        String header = String.format("%-5s %-20s %-20s %-15s %-15s %-10s\n", "ID", "Nome", "Endereço", "Telefone", "CPF", "Crédito");
+        txtAreaClientes.append(header);
+        txtAreaClientes.append("--------------------------------------------------------------------------------\n");
+
+        for (ClienteModel cliente : clientes) {
+            String enderecoFormatado = (cliente.getA01_Endereco().length() > 20) ? cliente.getA01_Endereco().substring(0, 20) + "..." : cliente.getA01_Endereco();
+            String clienteInfo = String.format("%-5d %-20s %-20s %-15s %-15s %-10.2f\n",
+                    cliente.getA01_Id(),
+                    cliente.getA01_Nome(),
+                    enderecoFormatado,
+                    cliente.getA01_Telefone(),
+                    cliente.getA01_CPF(),
+                    cliente.getA01_Credito());
+            txtAreaClientes.append(clienteInfo);
+        }
+    }
+
+    // Método de alteração de cliente
+     private void alterarCliente() {
+       try {
+         int id = Integer.parseInt(txtId.getText());
+          String nome = txtNome.getText();
+          String endereco = txtEndereco.getText();
+          String telefone = txtTelefone.getText();
+          String cpf = txtCpf.getText();
+          double credito = Double.parseDouble(txtCredito.getText());
+    
+          clienteControl.alterarCliente(id, nome, endereco, telefone, cpf, credito);
+          JOptionPane.showMessageDialog(this, "Cliente alterado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+      } catch (NumberFormatException e) {
+          JOptionPane.showMessageDialog(this, "Por favor, insira dados válidos para o ID e Crédito.", "Erro", JOptionPane.ERROR_MESSAGE);
+      }
+    }
+
+    // Método de exclusão de cliente
+     private void excluirCliente() {
+    	try {
+           int id = Integer.parseInt(txtId.getText());
+            clienteControl.excluirCliente(id);
+            JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+      } catch (NumberFormatException e) {
+          JOptionPane.showMessageDialog(this, "Por favor, insira um ID válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+   //  Método de pesquisa de cliente
+     private void pesquisarCliente() {
+    	    String nome = txtNome.getText(); 
+    	    List<ClienteModel> clientes = clienteControl.pesquisarCliente(nome); // Mudar para lista de clientes
+    	    
+    	    if (clientes != null && !clientes.isEmpty()) {
+    	        StringBuilder resultado = new StringBuilder();
+    	        
+    	        // Construir a string para todos os clientes encontrados
+    	        for (ClienteModel cliente : clientes) {
+    	            resultado.append(String.format(
+    	                "ID: %d\nNome: %s\nEndereço: %s\nTelefone: %s\nCPF: %s\nCrédito: %.2f\n\n",
+    	                cliente.getA01_Id(),
+    	                cliente.getA01_Nome(),
+    	                cliente.getA01_Endereco(),
+    	                cliente.getA01_Telefone(),
+    	                cliente.getA01_CPF(),
+    	                cliente.getA01_Credito()
+    	            ));
+    	        }
+    	        
+    	        txtAreaClientes.setText(resultado.toString()); // Mostrar todos os resultados
+    	    } else {
+    	        JOptionPane.showMessageDialog(this, "Cliente não encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
+    	    }
+    	}
+
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ClienteView().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new ClienteView().setVisible(true));
     }
 }

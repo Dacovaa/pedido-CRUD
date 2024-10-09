@@ -1,19 +1,22 @@
 package Pck_Control;
-import java.sql.Date;
 
 import Pck_Model.PedidoModel;
-import Pck_Persistency.PedidoPersistencia;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoControl {
-	
-	PedidoModel pedido = new PedidoModel();
-	PedidoPersistencia persistirPedido = new PedidoPersistencia();
-	public void inserirPedido(int A01_Id, Date A03_Date, double A03_Valor_Total) {
-		pedido.setA01_Id(A01_Id);
-		pedido.setA03_Date(A03_Date);
-		pedido.setA03_Valor_Total(A03_Valor_Total);
-		persistirPedido.inserirPedido(pedido);
-	}
+    private List<PedidoModel> pedidos;
+
+    public PedidoControl() {
+        this.pedidos = new ArrayList<>();
+    }
+
+    public void inserirPedido(PedidoModel pedido) {
+        pedidos.add(pedido);
+    }
+
+    public List<PedidoModel> listarPedidos() {
+        return pedidos;
+    }
 }
-
-
