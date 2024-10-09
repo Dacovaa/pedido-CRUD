@@ -53,13 +53,8 @@ public class ItemPedidoPersistencia {
         }
     }
 
-	public List<Item_pedidoModel> listarItensPedido() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void inserirItemPedido(int pedidoId, int produtoId, int quantidade, double precoUnitario) {
-		// TODO Auto-generated method stub
-		
-	}
+    public List<Item_pedidoModel> listarItensPedido() {
+        // TODO: Implementar a lógica para listar os itens do pedido
+        return null;
+    }
 }

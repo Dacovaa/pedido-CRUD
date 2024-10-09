@@ -78,6 +78,7 @@ public class PedidoNovoView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 salvarPedido();
+                inserirItensPedido();
             }
         });
     }
@@ -135,6 +136,7 @@ public class PedidoNovoView extends JFrame {
             item.setPedidoId(novoPedido.getId()); // Atualiza o ID do pedido associado antes de adicionar
             novoPedido.adicionarItem(item);
         }
+        
 
         pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
         JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -142,6 +144,16 @@ public class PedidoNovoView extends JFrame {
         textAreaItens.setText(""); // Limpa a área de texto
     }
 
+    private void inserirItensPedido() {
+        // Verifica se existem itens para inserir
+        for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
+            // Insere cada item no banco de dados
+            itemPedidoControl.adicionarItem(item.getPedidoId(), item.getProdutoId(), item.getQuantidade(), item.getPrecoUnitario());
+        }
+        
+        // Exibe mensagem de sucesso ao inserir itens
+        JOptionPane.showMessageDialog(this, "Itens do pedido inseridos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             PedidoNovoView view = new PedidoNovoView();
