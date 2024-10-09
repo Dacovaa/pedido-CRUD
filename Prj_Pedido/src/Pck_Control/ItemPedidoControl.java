@@ -13,8 +13,14 @@ public class ItemPedidoControl {
     }
 
     // Método para adicionar um item ao pedido
-    public void adicionarItem(int produtoId, int quantidade, double precoUnitario) {
+    public void adicionarItem(int pedidoId, int produtoId, int quantidade, double precoUnitario) {
+        // Verifica se a quantidade é válida
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+        }
+        
         Item_pedidoModel novoItem = new Item_pedidoModel(); // Cria um novo item
+        novoItem.setPedidoId(pedidoId); // Define o ID do pedido associado
         novoItem.setProdutoId(produtoId); // Define o ID do produto
         novoItem.setQuantidade(quantidade); // Define a quantidade comprada
         novoItem.setPrecoUnitario(precoUnitario); // Define o preço unitário
@@ -23,11 +29,24 @@ public class ItemPedidoControl {
 
     // Método para listar todos os itens do pedido
     public List<Item_pedidoModel> listarItens() {
-        return itens; // Retorna a lista de itens
+        return new ArrayList<>(itens); // Retorna uma cópia da lista de itens
+    }
+    public void inserirItemPedido(int pedidoId, int produtoId, int quantidade, double precoUnitario) {
+        ItemPedidoControl itemPedidoPersistencia = null;
+		itemPedidoPersistencia.inserirItemPedido(pedidoId, produtoId, quantidade, precoUnitario);
     }
 
     // Método para limpar todos os itens do pedido
     public void limparItens() {
         itens.clear(); // Limpa a lista de itens
+    }
+
+    // Método para calcular o valor total dos itens
+    public double calcularValorTotal() {
+        double valorTotal = 0.0;
+        for (Item_pedidoModel item : itens) {
+            valorTotal += item.getQuantidade() * item.getPrecoUnitario(); // Calcula o valor total
+        }
+        return valorTotal; // Retorna o valor total
     }
 }

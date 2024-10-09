@@ -10,9 +10,10 @@ public class PedidoModel {
     private Date data; // Data em que o pedido foi realizado
     private double valorTotal; // Valor total do pedido
     private List<Item_pedidoModel> itens; // Lista de itens do pedido
-
+    
     public PedidoModel() {
         itens = new ArrayList<>(); // Inicializa a lista de itens
+        valorTotal = 0.0; // Inicializa o valor total como 0
     }
 
     // Getters e Setters
@@ -43,19 +44,19 @@ public class PedidoModel {
     public double getValorTotal() {
         return valorTotal; // Retorna o valor total do pedido
     }
-
+    
     public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal; // Define o valor total do pedido
+		this.valorTotal = valorTotal;
+	}
+
+	// Método para adicionar um item à lista de itens do pedido
+    public void adicionarItem(Item_pedidoModel item) {
+        this.itens.add(item); // Adiciona o item à lista
+        this.valorTotal += item.getQuantidade() * item.getPrecoUnitario(); // Atualiza o valor total do pedido
     }
 
     public List<Item_pedidoModel> getItens() {
         return itens; // Retorna a lista de itens do pedido
     }
 
-    // Método para adicionar um item à lista de itens do pedido
-    public void adicionarItem(Item_pedidoModel item) {
-        this.itens.add(item); // Adiciona o item à lista
-        // Atualiza o valor total ao adicionar um item
-        this.valorTotal += item.getQuantidade() * item.getPrecoUnitario(); // Calcula o valor total
-    }
 }
