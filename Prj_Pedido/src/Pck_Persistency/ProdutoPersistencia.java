@@ -2,6 +2,7 @@ package Pck_Persistency;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,38 @@ public class ProdutoPersistencia {
             oCall.execute();
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+    
+    
+    public boolean verificarEstoque(int produtoId, int quantidade) {
+        String query = "SELECT A02_Estoque FROM produto_02 WHERE A02_Id = ?";
+        try (Connection conn = oConectar.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setInt(1, produtoId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int estoqueAtual = rs.getInt("A02_Estoque");
+                return estoqueAtual >= quantidade; // Retorna true se houver estoque suficiente
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Retorna false se não encontrou o produto ou houve erro
+    }
+
+    // Método para atualizar o estoque
+    public void atualizarEstoque(int produtoId, int quantidade) {
+        String query = "UPDATE produto_02 SET A02_Estoque = A02_Estoque - ? WHERE A02_Id = ?";
+        try (Connection conn = oConectar.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             
+            stmt.setInt(1, quantidade);
+            stmt.setInt(2, produtoId);
+            stmt.executeUpdate(); // Executa a atualização
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

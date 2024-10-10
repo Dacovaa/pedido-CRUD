@@ -135,13 +135,21 @@ public class PedidoNovoView extends JFrame {
         for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
             item.setA03_id(novoPedido.getId()); // Atualiza o ID do pedido associado antes de adicionar
             novoPedido.adicionarItem(item);
+            
+            pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
+            
+            // Atualiza o estoque após a inserção do pedido
+            novoPedido.retirarEstoque(); // Chama o método para retirar do estoque
+
+            JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            itemPedidoControl.limparItens(); // Limpa os itens do pedido após salvar
+            textAreaItens.setText(""); // Limpa a área de texto
         }
 
         // Exibe os itens do pedido e o pedido antes de salvar para depuração
         System.out.println("Itens do Pedido (antes de salvar): " + itemPedidoControl.listarItens());
         System.out.println("Pedido (antes de salvar): " + novoPedido);
 
-        pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
         System.out.println("Pedido ID (depois de salvar): " + novoPedido.getId()); // Verifica o ID do pedido
 
         JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);

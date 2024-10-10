@@ -3,6 +3,7 @@ package Pck_Model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import Pck_Persistency.ProdutoPersistencia;
 
 public class PedidoModel {
     private int id; // ID do pedido
@@ -53,6 +54,24 @@ public class PedidoModel {
     public void adicionarItem(Item_pedidoModel item) {
         this.itens.add(item); // Adiciona o item à lista
         this.valorTotal += item.getA04_Quantidade() * item.getA04_Preco_Unitario(); 
+    }
+    
+    public void retirarEstoque() {
+        ProdutoPersistencia produtoPersistencia = new ProdutoPersistencia(); // Inicializa a persistência de produtos
+        
+        for (Item_pedidoModel item : itens) {
+            // Aqui você deve buscar o produto pelo ID e depois atualizar o estoque
+            int produtoId = item.getA02_id(); // ID do produto
+            int quantidade = item.getA04_Quantidade(); // Quantidade a ser subtraída
+
+            // Verifica se o produto existe e se há estoque suficiente
+            if (produtoPersistencia.verificarEstoque(produtoId, quantidade)) {
+                produtoPersistencia.atualizarEstoque(produtoId, quantidade); // Atualiza o estoque
+                System.out.println("Estoque atualizado para o produto ID: " + produtoId);
+            } else {
+                System.out.println("Estoque insuficiente para o produto ID: " + produtoId);
+            }
+        }
     }
 
     public List<Item_pedidoModel> getItens() {
