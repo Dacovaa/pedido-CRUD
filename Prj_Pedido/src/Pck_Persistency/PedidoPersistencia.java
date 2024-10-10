@@ -48,10 +48,10 @@ public class PedidoPersistencia {
              
             while (rs.next()) {
                 PedidoModel pedido = new PedidoModel();
-                pedido.setId(rs.getInt("A03_Id")); // Nome da coluna atualizado
-                pedido.setClienteId(rs.getInt("A01_Id")); // Nome da coluna atualizado
-                pedido.setData(rs.getDate("A03_Data")); // Nome da coluna atualizado
-                pedido.setValorTotal(rs.getDouble("A03_Valor_Total")); // Nome da coluna atualizado
+                pedido.setId(rs.getInt("A03_Id"));
+                pedido.setClienteId(rs.getInt("A01_Id"));
+                pedido.setData(rs.getDate("A03_Data"));
+                pedido.setValorTotal(rs.getDouble("A03_Valor_Total"));
                 lista.add(pedido);
             }
         } catch (Exception e) {

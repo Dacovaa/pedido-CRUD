@@ -1,61 +1,45 @@
 package Pck_Model;
 
 public class Item_pedidoModel {
-    private int id; // Identificador do item
-    private int pedidoId; // ID do pedido ao qual este item pertence
-    private int produtoId; // ID do produto
-    private int quantidade; // Quantidade comprada
-    private double precoUnitario; // Preço unitário do produto
+    private int A02_id;
+    private int A03_id; 
+    private int A04_id;
+    private double A04_Preco_Unitario; 
+    private int A04_Quantidade;
+	public int getA02_id() {
+		return A02_id;
+	}
+	public void setA02_id(int a02_id) {
+		A02_id = a02_id;
+	}
+	public int getA03_id() {
+		return A03_id;
+	}
+	public void setA03_id(int a03_id) {
+		A03_id = a03_id;
+	}
+	public int getA04_id() {
+		return A04_id;
+	}
+	public void setA04_id(int a04_id) {
+		A04_id = a04_id;
+	}
+	public double getA04_Preco_Unitario() {
+		return A04_Preco_Unitario;
+	}
+	public void setA04_Preco_Unitario(double a04_Preco_Unitario) {
+		A04_Preco_Unitario = a04_Preco_Unitario;
+	}
+	public int getA04_Quantidade() {
+		return A04_Quantidade;
+	}
+	public void setA04_Quantidade(int a04_Quantidade) {
+		A04_Quantidade = a04_Quantidade;
+	} 
 
-    // Construtor padrão
-    public Item_pedidoModel() {
-    }
-
-    // Construtor com parâmetros
-    public Item_pedidoModel(int produtoId, int quantidade, double precoUnitario) {
-        this.produtoId = produtoId;
-        this.quantidade = quantidade;
-        this.precoUnitario = precoUnitario;
-    }
-
-    // Getters e Setters
-    public int getId() {
-        return id; // Retorna o ID do item
-    }
-
-    public void setId(int id) {
-        this.id = id; // Define o ID do item
-    }
-
-    public int getPedidoId() {
-        return pedidoId; // Retorna o ID do pedido
-    }
-
-    public void setPedidoId(int pedidoId) {
-        this.pedidoId = pedidoId; // Define o ID do pedido
-    }
-
-    public int getProdutoId() {
-        return produtoId; // Retorna o ID do produto
-    }
-
-    public void setProdutoId(int produtoId) {
-        this.produtoId = produtoId; // Define o ID do produto
-    }
-
-    public int getQuantidade() {
-        return quantidade; // Retorna a quantidade comprada
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade; // Define a quantidade comprada
-    }
-
-    public double getPrecoUnitario() {
-        return precoUnitario; // Retorna o preço unitário do produto
-    }
-
-    public void setPrecoUnitario(double precoUnitario) {
-        this.precoUnitario = precoUnitario; // Define o preço unitário do produto
-    }
+    
+    
+    
+    
+    
 }

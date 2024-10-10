@@ -52,7 +52,7 @@ public class PedidoModel {
 	// Método para adicionar um item à lista de itens do pedido
     public void adicionarItem(Item_pedidoModel item) {
         this.itens.add(item); // Adiciona o item à lista
-        this.valorTotal += item.getQuantidade() * item.getPrecoUnitario(); // Atualiza o valor total do pedido
+        this.valorTotal += item.getA04_Quantidade() * item.getA04_Preco_Unitario(); 
     }
 
     public List<Item_pedidoModel> getItens() {

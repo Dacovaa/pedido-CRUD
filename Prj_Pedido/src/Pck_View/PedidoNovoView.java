@@ -118,7 +118,7 @@ public class PedidoNovoView extends JFrame {
         }
 
         // Adiciona o item usando o ID do produto e a quantidade
-        itemPedidoControl.adicionarItem(0, produtoSelecionado.getA02_Id(), quantidade, produtoSelecionado.getA02_Valor_Unitario()); // Passando 0 como pedidoId, será atualizado depois
+        itemPedidoControl.adicionarItem(0, produtoSelecionado.getA02_Id(), produtoSelecionado.getA02_Valor_Unitario(), quantidade); // Passando 0 como pedidoId, será atualizado depois
 
         // Atualiza a área de texto com a lista de itens
         textAreaItens.append("Produto ID: " + produtoSelecionado.getA02_Id() + ", Quantidade: " + quantidade + "\n");
@@ -133,12 +133,17 @@ public class PedidoNovoView extends JFrame {
 
         // Adiciona os itens ao pedido
         for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
-            item.setPedidoId(novoPedido.getId()); // Atualiza o ID do pedido associado antes de adicionar
+            item.setA03_id(novoPedido.getId()); // Atualiza o ID do pedido associado antes de adicionar
             novoPedido.adicionarItem(item);
         }
-        
+
+        // Exibe os itens do pedido e o pedido antes de salvar para depuração
+        System.out.println("Itens do Pedido (antes de salvar): " + itemPedidoControl.listarItens());
+        System.out.println("Pedido (antes de salvar): " + novoPedido);
 
         pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
+        System.out.println("Pedido ID (depois de salvar): " + novoPedido.getId()); // Verifica o ID do pedido
+
         JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         itemPedidoControl.limparItens(); // Limpa os itens do pedido após salvar
         textAreaItens.setText(""); // Limpa a área de texto
@@ -146,14 +151,18 @@ public class PedidoNovoView extends JFrame {
 
     private void inserirItensPedido() {
         // Verifica se existem itens para inserir
+        System.out.println("Inserindo itens do pedido..."); // Verifica se o método é chamado
+
         for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
+            System.out.println("Item a ser inserido: " + item); // Exibe o item antes de inserir
             // Insere cada item no banco de dados
-            itemPedidoControl.adicionarItem(item.getPedidoId(), item.getProdutoId(), item.getQuantidade(), item.getPrecoUnitario());
+            itemPedidoControl.adicionarItem(item.getA02_id(), item.getA03_id(), item.getA04_Preco_Unitario(), item.getA04_Quantidade());
         }
-        
+
         // Exibe mensagem de sucesso ao inserir itens
         JOptionPane.showMessageDialog(this, "Itens do pedido inseridos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             PedidoNovoView view = new PedidoNovoView();
