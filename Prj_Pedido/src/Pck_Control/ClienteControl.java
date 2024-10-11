@@ -42,6 +42,6 @@ public class ClienteControl {
     }
 
     public List<ClienteModel> pesquisarCliente(String nome) {
-        return clientePersistencia.pesquisarCliente(nome); // Retorna a lista de clientes encontrados
+        return clientePersistencia.pesquisarCliente(nome);
     }
 }

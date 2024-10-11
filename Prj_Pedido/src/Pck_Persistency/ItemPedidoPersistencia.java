@@ -2,10 +2,13 @@ package Pck_Persistency;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Pck_Control.ItemPedidoControl;
 import Pck_Dao.Conexao_DAO;
 import Pck_Model.Item_pedidoModel;
 
@@ -13,33 +16,31 @@ public class ItemPedidoPersistencia {
 
     private Conexao_DAO oConectar;
 
-    // Stored procedures
     private static final String QUERY_INSERIR = "{CALL Proc_Inserir_Item_Pedido(?, ?, ?, ?)}";
     private static final String QUERY_LISTAR = "{CALL Proc_Listar_Itens_Pedido()}";
     private static final String QUERY_PESQUISAR_POR_PEDIDO = "{CALL Proc_Select_Itens_Pedido_Por_PedidoId(?)}";
 
     public ItemPedidoPersistencia() {
-        oConectar = new Conexao_DAO(); // Inicializa a conexão
+        oConectar = new Conexao_DAO();
     }
 
-    // Método para inserir um item de pedido
-    public void inserirItemPedido(Item_pedidoModel item) {
-        try (Connection conn = oConectar.getConnection(); 
-             CallableStatement oCall = conn.prepareCall(QUERY_INSERIR)) {
-
-            if (conn != null) {
-                oCall.setInt(1, item.getA02_id());  // ID do Pedido
-                oCall.setInt(2, item.getA03_id());  // ID do Produto
-                oCall.setDouble(3, item.getA04_Preco_Unitario());
-                oCall.setInt(4, item.getA04_Quantidade());
-                oCall.execute();
-            }
-        } catch (Exception e) {
+    public void inserirItemPedido(int pedidoId, int produtoId, int quantidade, double precoUnitario) {
+    	ItemPedidoControl itemPedidoPersistencia = new ItemPedidoControl();
+        String sql = "INSERT INTO item_pedido_04 (A02_Id, A03_Id, A04_Preco_Unitario, A04_Quantidade) VALUES (?, ?, ?, ?)";
+        try (Connection conn = oConectar.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setInt(1, produtoId);
+            stmt.setInt(2, pedidoId);
+            stmt.setDouble(3, precoUnitario);
+            stmt.setInt(4, quantidade);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // Método para listar todos os itens de pedido
     public List<Item_pedidoModel> listarItensPedido() {
         List<Item_pedidoModel> lista = new ArrayList<>();
         try (Connection conn = oConectar.getConnection(); 
@@ -60,7 +61,6 @@ public class ItemPedidoPersistencia {
         return lista;
     }
 
-    // Método para buscar itens de pedido por ID do pedido
     public List<Item_pedidoModel> buscarItensPorPedidoId(int pedidoId) {
         List<Item_pedidoModel> lista = new ArrayList<>();
         try (Connection conn = oConectar.getConnection(); 

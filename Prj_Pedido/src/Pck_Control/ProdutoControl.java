@@ -38,7 +38,7 @@ public class ProdutoControl {
     }
 
     public List<ProdutoModel> pesquisarProduto(String descricao) {
-        return produtoPersistencia.pesquisarProduto(descricao); // Retorna a lista de produtos encontrados
+        return produtoPersistencia.pesquisarProduto(descricao);
     }
 
 }

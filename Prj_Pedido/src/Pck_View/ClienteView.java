@@ -17,13 +17,11 @@ public class ClienteView extends JFrame {
     public ClienteView(ClienteControl clienteControl) {
     	this.clienteControl = clienteControl;
 
-        // Configuração da interface
         setTitle("Gerenciamento de Clientes");
         setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Painel de entrada de dados
         JPanel panelEntrada = new JPanel(new GridLayout(6, 2, 5, 5));
         panelEntrada.setBorder(BorderFactory.createTitledBorder("Dados do Cliente"));
 
@@ -53,14 +51,12 @@ public class ClienteView extends JFrame {
 
         add(panelEntrada, BorderLayout.NORTH);
 
-        // Área de texto para listar clientes
         txtAreaClientes = new JTextArea(10, 50);
         txtAreaClientes.setEditable(false);
         txtAreaClientes.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(txtAreaClientes);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Painel de botões
         JPanel panelBotoes = new JPanel(new FlowLayout());
         panelBotoes.setBorder(BorderFactory.createTitledBorder("Ações"));
 
@@ -86,19 +82,18 @@ public class ClienteView extends JFrame {
 
         add(panelBotoes, BorderLayout.SOUTH);
         
-        // Botão "Voltar"
         JButton btnVoltar = new JButton("Voltar");
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Fecha a janela atual
-                new PaginaInicialView().setVisible(true); // Abre a tela inicial
+                dispose(); 
+                new PaginaInicialView().setVisible(true);
             }
         });
         panelBotoes.add(btnVoltar);
     }
 
-    // Método de inserção de cliente
+  
     private void inserirCliente() {
         String nome = txtNome.getText();
         String endereco = txtEndereco.getText();
@@ -115,7 +110,6 @@ public class ClienteView extends JFrame {
         }
     }
 
-    // Método de listagem de clientes
     private void listarCliente() {
         txtAreaClientes.setText("");
         List<ClienteModel> clientes = clienteControl.listarCliente();
@@ -137,7 +131,6 @@ public class ClienteView extends JFrame {
         }
     }
 
-    // Método de alteração de cliente
      private void alterarCliente() {
        try {
          int id = Integer.parseInt(txtId.getText());
@@ -154,7 +147,6 @@ public class ClienteView extends JFrame {
       }
     }
 
-    // Método de exclusão de cliente
      private void excluirCliente() {
     	try {
            int id = Integer.parseInt(txtId.getText());
@@ -165,10 +157,9 @@ public class ClienteView extends JFrame {
         }
     }
 
-   //  Método de pesquisa de cliente
      private void pesquisarCliente() {
     	    String nome = txtNome.getText(); 
-    	    List<ClienteModel> clientes = clienteControl.pesquisarCliente(nome); // Mudar para lista de clientes
+    	    List<ClienteModel> clientes = clienteControl.pesquisarCliente(nome);
     	    
     	    if (clientes != null && !clientes.isEmpty()) {
     	        StringBuilder resultado = new StringBuilder();

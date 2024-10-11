@@ -8,7 +8,6 @@ public class ClienteModel {
     private String a01_CPF;
     private double a01_Credito;
 
-    // Getters e Setters
     public int getA01_Id() {
         return a01_Id;
     }

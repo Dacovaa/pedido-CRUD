@@ -1,12 +1,11 @@
 package Pck_Model;
 
 public class ProdutoModel {
-    private int A02_Id; // ID do produto
-    private int A02_Estoque; // Quantidade em estoque
-    private String A02_Descricao; // Descrição do produto
-    private double A02_Valor_Unitario; // Preço unitário do produto
+    private int A02_Id;
+    private int A02_Estoque; 
+    private String A02_Descricao; 
+    private double A02_Valor_Unitario; 
 
-    // Getters e Setters
     public int getA02_Id() {
         return A02_Id;
     }

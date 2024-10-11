@@ -32,41 +32,34 @@ public class PedidoNovoView extends JFrame {
         clienteControl = new ClienteControl();
         itemPedidoControl = new ItemPedidoControl();
 
-        // Configurações da janela
         setTitle("Novo Pedido");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new FlowLayout());
 
-        // ComboBox para selecionar cliente
         comboClientes = new JComboBox<>();
         carregarClientes();
         add(new JLabel("Selecionar Cliente:"));
         add(comboClientes);
 
-        // ComboBox para selecionar produto
         comboProdutos = new JComboBox<>();
         carregarProdutos();
         add(new JLabel("Selecionar Produto:"));
         add(comboProdutos);
 
-        // Campo para quantidade
         txtQuantidade = new JTextField(5);
         add(new JLabel("Quantidade:"));
         add(txtQuantidade);
 
-        // Botões
         btnAdicionarItem = new JButton("Adicionar Item");
         btnSalvarPedido = new JButton("Salvar Pedido");
         add(btnAdicionarItem);
         add(btnSalvarPedido);
 
-        // Área de texto para listar itens do pedido
         textAreaItens = new JTextArea(10, 40);
         textAreaItens.setEditable(false);
         add(new JScrollPane(textAreaItens));
 
-        // Ações dos botões
         btnAdicionarItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,52 +115,50 @@ public class PedidoNovoView extends JFrame {
 
         // Atualiza a área de texto com a lista de itens
         textAreaItens.append("Produto ID: " + produtoSelecionado.getA02_Id() + ", Quantidade: " + quantidade + "\n");
-        txtQuantidade.setText(""); // Limpa o campo de quantidade
+        txtQuantidade.setText("");
     }
 
     private void salvarPedido() {
         ClienteModel clienteSelecionado = (ClienteModel) comboClientes.getSelectedItem();
         PedidoModel novoPedido = new PedidoModel();
-        novoPedido.setClienteId(clienteSelecionado.getA01_Id()); // ID do cliente
-        novoPedido.setData(new java.util.Date()); // Data atual
+        novoPedido.setClienteId(clienteSelecionado.getA01_Id());
+        novoPedido.setData(new java.util.Date());
 
-        // Adiciona os itens ao pedido
         for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
-            item.setA03_id(novoPedido.getId()); // Atualiza o ID do pedido associado antes de adicionar
+            item.setA03_id(novoPedido.getId());
             novoPedido.adicionarItem(item);
-            
-            pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
-            
-            // Atualiza o estoque após a inserção do pedido
-            novoPedido.retirarEstoque(); // Chama o método para retirar do estoque
-
-            JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            itemPedidoControl.limparItens(); // Limpa os itens do pedido após salvar
-            textAreaItens.setText(""); // Limpa a área de texto
         }
 
-        // Exibe os itens do pedido e o pedido antes de salvar para depuração
-        System.out.println("Itens do Pedido (antes de salvar): " + itemPedidoControl.listarItens());
-        System.out.println("Pedido (antes de salvar): " + novoPedido);
+        // Insere o pedido no controle fora do loop
+        pedidoControl.inserirPedido(novoPedido); // Insere o pedido no controle
+        
+        // Agora que o pedido foi inserido, atualizamos o ID do pedido
+        int pedidoId = novoPedido.getId(); // Captura o ID do pedido gerado
 
-        System.out.println("Pedido ID (depois de salvar): " + novoPedido.getId()); // Verifica o ID do pedido
+        // Atualiza o estoque após a inserção do pedido
+        for (Item_pedidoModel item : novoPedido.getItens()) {
+            itemPedidoControl.inserirItemPedido(pedidoId, item.getA02_id(), item.getA04_Quantidade(), item.getA04_Preco_Unitario());
+            // estoqueControl.retirarEstoque(item.getA02_id(), item.getA04_Quantidade());
+        }
 
         JOptionPane.showMessageDialog(this, "Pedido salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         itemPedidoControl.limparItens(); // Limpa os itens do pedido após salvar
         textAreaItens.setText(""); // Limpa a área de texto
+
+        // Exibe os itens do pedido e o pedido antes de salvar para depuração
+        System.out.println("Itens do Pedido (antes de salvar): " + itemPedidoControl.listarItens());
+        System.out.println("Pedido (antes de salvar): " + novoPedido);
+        System.out.println("Pedido ID (depois de salvar): " + pedidoId); // Verifica o ID do pedido
     }
 
     private void inserirItensPedido() {
-        // Verifica se existem itens para inserir
         System.out.println("Inserindo itens do pedido..."); // Verifica se o método é chamado
 
         for (Item_pedidoModel item : itemPedidoControl.listarItens()) {
             System.out.println("Item a ser inserido: " + item); // Exibe o item antes de inserir
-            // Insere cada item no banco de dados
+            // Insere cada item no banco
             itemPedidoControl.adicionarItem(item.getA02_id(), item.getA03_id(), item.getA04_Preco_Unitario(), item.getA04_Quantidade());
         }
-
-        // Exibe mensagem de sucesso ao inserir itens
         JOptionPane.showMessageDialog(this, "Itens do pedido inseridos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 

@@ -10,26 +10,22 @@ public class PedidoControl {
     private PedidoPersistencia pedidoPersistencia;
 
     public PedidoControl() {
-        this.pedidoPersistencia = new PedidoPersistencia(); // Inicializa a persistência
+        this.pedidoPersistencia = new PedidoPersistencia();
     }
 
-    // Método para inserir o pedido e retornar o ID gerado
     public int inserirPedido(PedidoModel pedido) {
-        // Verifica se o pedido não é nulo
         if (pedido != null) {
-            pedidoPersistencia.inserirPedido(pedido); // Insere o pedido no banco de dados
-            return pedido.getId(); // Retorna o ID do pedido (presumindo que o ID será atualizado após a inserção)
+            pedidoPersistencia.inserirPedido(pedido);
+            return pedido.getId();
         } else {
             throw new IllegalArgumentException("O pedido não pode ser nulo.");
         }
     }
 
-    // Método para listar todos os pedidos
     public List<PedidoModel> listarPedidos() {
-        return pedidoPersistencia.listarPedidos(); // Retorna a lista de pedidos do banco de dados
+        return pedidoPersistencia.listarPedidos();
     }
 
-    // Método para pesquisar pedidos por nome de cliente ou ID do pedido/cliente
     public List<PedidoModel> pesquisarPedidos(String pesquisa) {
         List<PedidoModel> pedidosEncontrados = new ArrayList<>();
         for (PedidoModel pedido : listarPedidos()) {
@@ -41,7 +37,6 @@ public class PedidoControl {
         return pedidosEncontrados;
     }
 
-    // Método para excluir um pedido pelo ID
     public void excluirPedido(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do pedido deve ser maior que zero.");

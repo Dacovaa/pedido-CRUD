@@ -13,19 +13,17 @@ public class ClientePersistencia {
 
     private Conexao_DAO oConectar;
 
-    // Stored procedures
     private static final String QUERY_INSERIR = "{CALL Proc_Inserir_Cliente(?, ?, ?, ?, ?)}";
-    private static final String QUERY_ATUALIZAR = "{CALL Proc_Update_Cliente(?, ?, ?, ?, ?, ?)}"; // Corrigido para incluir o CPF
+    private static final String QUERY_ATUALIZAR = "{CALL Proc_Update_Cliente(?, ?, ?, ?, ?, ?)}";
     private static final String QUERY_EXCLUIR = "{CALL Proc_Deletar_Cliente(?)}";
     private static final String QUERY_LISTAR = "{CALL Proc_Listar_Clientes()}";
     private static final String QUERY_PESQUISAR = "{CALL Proc_Select_Cliente(?)}"; 
-    private static final String QUERY_BUSCAR_POR_ID = "{CALL Proc_Select_Cliente_Por_Id(?)}"; // Adicionando o método de busca por ID
+    private static final String QUERY_BUSCAR_POR_ID = "{CALL Proc_Select_Cliente_Por_Id(?)}";
 
     public ClientePersistencia() {
-        oConectar = new Conexao_DAO(); // Inicializa a conexão
+        oConectar = new Conexao_DAO(); 
     }
 
-    // Método para inserir um cliente
     public void inserirCliente(ClienteModel cliente) {
         try (Connection conn = oConectar.getConnection(); 
              CallableStatement oCall = conn.prepareCall(QUERY_INSERIR)) {
@@ -43,7 +41,6 @@ public class ClientePersistencia {
         }
     }
 
-    // Método para listar todos os clientes
     public List<ClienteModel> listarCliente() {
         List<ClienteModel> lista = new ArrayList<>();
         try (Connection conn = oConectar.getConnection(); 
@@ -66,7 +63,6 @@ public class ClientePersistencia {
         return lista;
     }
 
-    // Método para pesquisar um cliente por nome
     public List<ClienteModel> pesquisarCliente(String nome) {
         List<ClienteModel> lista = new ArrayList<>();
         try (Connection conn = oConectar.getConnection(); 
@@ -91,7 +87,6 @@ public class ClientePersistencia {
         return lista;
     }
 
-    // Método para alterar um cliente
     public void alterarCliente(ClienteModel cliente) {
         try (Connection conn = oConectar.getConnection(); 
              CallableStatement oCall = conn.prepareCall(QUERY_ATUALIZAR)) {
@@ -108,7 +103,6 @@ public class ClientePersistencia {
         }
     }
 
-    // Método para excluir um cliente
     public void excluirCliente(int id) {
         try (Connection conn = oConectar.getConnection(); 
              CallableStatement oCall = conn.prepareCall(QUERY_EXCLUIR)) {
@@ -120,7 +114,6 @@ public class ClientePersistencia {
         }
     }
 
-    // Método para buscar um cliente por ID
     public ClienteModel buscarClientePorId(int id) {
         ClienteModel cliente = null;
         try (Connection conn = oConectar.getConnection(); 

@@ -18,7 +18,7 @@ public class ProdutoPersistencia {
     String querySelect = "{CALL Proc_Select_Produto(?)}"; 
     String queryListar = "{CALL Proc_Listar_Produtos()}"; 
 
-    // Método para inserir produto
+
     public void inserirProduto(ProdutoModel produto) {
         try {
             Connection conn = oConectar.getConnection();
@@ -47,10 +47,9 @@ public class ProdutoPersistencia {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false; // Retorna false se não encontrou o produto ou houve erro
+        return false;
     }
 
-    // Método para atualizar o estoque
     public void atualizarEstoque(int produtoId, int quantidade) {
         String query = "UPDATE produto_02 SET A02_Estoque = A02_Estoque - ? WHERE A02_Id = ?";
         try (Connection conn = oConectar.getConnection();
@@ -58,13 +57,12 @@ public class ProdutoPersistencia {
              
             stmt.setInt(1, quantidade);
             stmt.setInt(2, produtoId);
-            stmt.executeUpdate(); // Executa a atualização
+            stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Método para listar produtos
     public List<ProdutoModel> listarProdutos() {
         List<ProdutoModel> lista = new ArrayList<>();
         try {
@@ -85,7 +83,6 @@ public class ProdutoPersistencia {
         return lista;
     }
 
-    // Método para alterar produto
     public void alterarProduto(ProdutoModel produto) {
         try {
             Connection conn = oConectar.getConnection();
@@ -100,7 +97,6 @@ public class ProdutoPersistencia {
         }
     }
 
-    // Método para excluir produto
     public void excluirProduto(int A02_Id) {
         try {
             Connection conn = oConectar.getConnection();
@@ -112,13 +108,12 @@ public class ProdutoPersistencia {
         }
     }
 
-    // Método para pesquisar produto por nome
     public List<ProdutoModel> pesquisarProduto(String descricao) {
         List<ProdutoModel> lista = new ArrayList<>();
         try {
             Connection conn = oConectar.getConnection();
             CallableStatement oCall = conn.prepareCall(querySelect);
-            oCall.setString(1, descricao); // Certifique-se de que o parâmetro está sendo usado corretamente
+            oCall.setString(1, descricao); 
             ResultSet rs = oCall.executeQuery();
             
             while (rs.next()) {

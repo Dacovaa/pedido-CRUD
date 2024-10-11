@@ -17,25 +17,24 @@ public class ProdutoView extends JFrame {
     private JButton btnInserir, btnListar, btnAlterar, btnExcluir, btnPesquisar;
 
     public ProdutoView(ProdutoControl pordutoControl) {
-        // Configuração da interface (layout, campos, botões, etc.)
         setTitle("Gerenciamento de Produtos");
         setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Painel principal
+
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BorderLayout());
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Espaçamento nas bordas
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(panelPrincipal, BorderLayout.CENTER);
 
-        // Painel de entrada de dados
+
         JPanel panelEntrada = new JPanel();
-        panelEntrada.setLayout(new GridLayout(4, 2, 10, 10)); // 4 linhas, 2 colunas com espaçamento
-        panelEntrada.setBorder(BorderFactory.createTitledBorder("Dados do Produto")); // Borda para o painel
+        panelEntrada.setLayout(new GridLayout(4, 2, 10, 10)); 
+        panelEntrada.setBorder(BorderFactory.createTitledBorder("Dados do Produto")); 
         panelPrincipal.add(panelEntrada, BorderLayout.NORTH);
 
-        // Campos de entrada
+
         panelEntrada.add(new JLabel("ID (para alterar/excluir):"));
         txtId = new JTextField();
         panelEntrada.add(txtId);
@@ -52,14 +51,14 @@ public class ProdutoView extends JFrame {
         txtValorUnitario = new JTextField();
         panelEntrada.add(txtValorUnitario);
 
-        // Área de texto para listar produtos
+
         txtAreaProdutos = new JTextArea(10, 50);
         txtAreaProdutos.setEditable(false);
         txtAreaProdutos.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(txtAreaProdutos);
         panelPrincipal.add(scrollPane, BorderLayout.CENTER);
 
-        // Painel de botões
+
         JPanel panelBotoes = new JPanel();
         panelBotoes.setLayout(new FlowLayout()); // Layout em linha
         panelBotoes.setBorder(BorderFactory.createTitledBorder("Ações")); // Borda para o painel
@@ -86,13 +85,13 @@ public class ProdutoView extends JFrame {
         btnPesquisar.addActionListener(e -> pesquisarProduto());
         panelBotoes.add(btnPesquisar);
         
-        // Botão "Voltar"
+
         JButton btnVoltar = new JButton("Voltar");
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Fecha a janela atual
-                PaginaInicialView.getInstance().setVisible(true); // Usa a instância única
+                dispose(); 
+                PaginaInicialView.getInstance().setVisible(true);
             }
         });
         panelBotoes.add(btnVoltar);
@@ -177,7 +176,7 @@ public class ProdutoView extends JFrame {
     }
 
     public static void main(String[] args) {
-    	ProdutoControl produtoControl = new ProdutoControl(); // Instancia o controle
+    	ProdutoControl produtoControl = new ProdutoControl();
         SwingUtilities.invokeLater(() -> new ProdutoView(produtoControl).setVisible(true));
     }
 }
