@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 09/10/2024 às 01:48
+-- Tempo de geração: 11/10/2024 às 04:17
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -181,9 +181,9 @@ INSERT INTO `cliente_01` (`A01_Id`, `A01_Nome`, `A01_Endereco`, `A01_Telefone`, 
 (1, 'Luiz', 'Rua Nome da Rua, Nº da Rua', '11987654321', '98765432100', 1000000.00),
 (2, 'Felipe', 'Rua Pinto', '11999998888', '11111111111', 1000000.00),
 (3, 'Daniel', 'rua jota', '74999259855', '56734565488', 1000.00),
-(4, 'mateus gay', 'gaylandia', '11999242424', '45634598766', 24.00),
-(5, 'Gabriel bixa', 'bixalandia', '1124242424', '24242424242', 24.00),
-(6, 'lula', 'palacio do planalto', '13131313131', '13131313131', 13.00),
+(4, 'Matheus', 'rua falte', '11999567865', '9876543134', 300.00),
+(5, 'gabriel', 'rua dos maniquas', '11999567453', '56545678765', 167.00),
+(6, 'platão', 'rua dos pensamentos', '11999567453', '76789897643', 9999.00),
 (7, 'luiz', 'teste', '1111111', '1111111', 11111.00);
 
 -- --------------------------------------------------------
